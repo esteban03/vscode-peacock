@@ -13,6 +13,11 @@ import {
   ColorSettings,
   BuiltInColors
 } from '../enums';
+import {
+  changeColorToVueGreenHandler,
+  readConfiguration,
+  readWorkspaceConfiguration
+} from '../color-handlers';
 
 interface ICommand {
   title: string;
@@ -46,14 +51,14 @@ suite('Extension Basic Tests', function() {
     done();
   });
 
-  // test('Extension loads in VSCode and is active', function(done) {
-  //   // Hopefully a 200ms timeout will allow the extension to activate within Windows
-  //   // otherwise we get a false result.
-  //   setTimeout(function() {
-  //     assert.equal(extension.isActive, true);
-  //     done();
-  //   }, 200);
-  // });
+  test('Extension loads in VSCode and is active', function(done) {
+    // Hopefully a 200ms timeout will allow the extension to activate within Windows
+    // otherwise we get a false result.
+    setTimeout(function() {
+      assert.equal(extension.isActive, true);
+      done();
+    }, 200);
+  });
 
   test('constants.Commands exist in package.json', function() {
     const commandCollection: ICommand[] =
@@ -95,10 +100,36 @@ suite('Extension Basic Tests', function() {
     });
   });
 
+  test('set to vue green works', function() {
+    let config = vscode.workspace.getConfiguration('debug.console');
+    // assert.ok(config.fontSize === 12);
+
+    // changeColorToVueGreenHandler();
+    let config2 = vscode.workspace.getConfiguration('workbench');
+    let config3 = vscode.workspace.getConfiguration(
+      'workbench.colorCustomizations'
+    );
+    let config4 = vscode.workspace.getConfiguration(
+      'workbench.colorCustomizations.titleBar'
+    );
+    let config5 = vscode.workspace.getConfiguration(
+      'workbench.colorCustomizations.titleBar.activeBackground'
+    );
+    let config6 = readWorkspaceConfiguration<string>(ColorSettings.titleBar_activeBackground);
+
+    //colorCustomizations
+    const v = config2.get('titleBar.activeBackground');
+    assert.ok(v === '#f0000f');
+
+    // const result = readWorkspaceConfiguration(
+    //   ColorSettings.titleBar_activeBackground
+    // );
+    // assert.ok(result === BuiltInColors.Vue);
+  });
+
   // // Defines a Mocha unit test
   // test('Something 1', function() {
   //   assert.equal(-1, [1, 2, 3].indexOf(5));
   //   assert.equal(-1, [1, 2, 3].indexOf(0));
   // });
-
 });
